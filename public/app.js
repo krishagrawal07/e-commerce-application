@@ -12,9 +12,18 @@ const state = {
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const money = (value) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value || 0);
+const isVercel = location.hostname.includes("vercel.app");
+
+function apiUrl(path) {
+  if (!isVercel || !path.startsWith("/api/")) return path;
+  const [apiPath, query = ""] = path.slice(5).split("?");
+  const params = new URLSearchParams(query);
+  params.set("__api", apiPath);
+  return `/?${params.toString()}`;
+}
 
 function api(path, options = {}) {
-  return fetch(path, {
+  return fetch(apiUrl(path), {
     ...options,
     headers: {
       "Content-Type": "application/json",
