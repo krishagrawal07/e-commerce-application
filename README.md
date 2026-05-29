@@ -10,6 +10,16 @@ npm.cmd start
 
 Open `http://localhost:3000`.
 
+## Deploy
+
+This app is Vercel-ready. Static files are served from `public/`, and API requests are handled by the serverless function in `api/[...path].js`.
+
+```bash
+vercel.cmd --prod
+```
+
+On Vercel, the demo database is stored in temporary function storage, so it is suitable for demos. For production, replace the local JSON adapter in `server.js` with PostgreSQL, MySQL, MongoDB, or another hosted database.
+
 ## Demo Accounts
 
 - Admin: `admin@store.test` / `admin123`

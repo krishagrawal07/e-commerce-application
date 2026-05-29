@@ -2,11 +2,12 @@ const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
 const crypto = require("crypto");
+const os = require("os");
 
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, "public");
-const DATA_DIR = path.join(ROOT, "data");
+const DATA_DIR = process.env.VERCEL ? path.join(os.tmpdir(), "commerce-desk-data") : path.join(ROOT, "data");
 const DB_FILE = path.join(DATA_DIR, "store.json");
 const TOKEN_SECRET = process.env.TOKEN_SECRET || "dev-secret-change-me";
 
@@ -436,23 +437,41 @@ async function serveStatic(req, res, url) {
   }
 }
 
-const server = http.createServer(async (req, res) => {
+function createServer() {
+  return http.createServer(async (req, res) => {
+    try {
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      if (url.pathname.startsWith("/api/")) {
+        await handleApi(req, res, url);
+      } else {
+        await serveStatic(req, res, url);
+      }
+    } catch (error) {
+      send(res, 500, { error: error.message || "Server error" });
+    }
+  });
+}
+
+async function handleVercelRequest(req, res) {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
-    if (url.pathname.startsWith("/api/")) {
-      await handleApi(req, res, url);
-    } else {
-      await serveStatic(req, res, url);
-    }
+    await handleApi(req, res, url);
   } catch (error) {
     send(res, 500, { error: error.message || "Server error" });
   }
-});
+}
 
-ensureDb().then(() => {
-  server.listen(PORT, () => {
-    console.log(`E-commerce app running at http://localhost:${PORT}`);
-    console.log("Demo admin: admin@store.test / admin123");
-    console.log("Demo user: user@store.test / user123");
+if (require.main === module) {
+  ensureDb().then(() => {
+    createServer().listen(PORT, () => {
+      console.log(`E-commerce app running at http://localhost:${PORT}`);
+      console.log("Demo admin: admin@store.test / admin123");
+      console.log("Demo user: user@store.test / user123");
+    });
   });
-});
+}
+
+module.exports = {
+  createServer,
+  handleVercelRequest
+};
