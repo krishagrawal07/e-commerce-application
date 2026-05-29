@@ -464,6 +464,11 @@ async function handleVercelRequest(req, res) {
 async function handleVercelEntrypoint(req, res) {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
+    const apiPath = url.searchParams.get("__api");
+    if (apiPath) {
+      url.pathname = `/api/${apiPath}`;
+      url.searchParams.delete("__api");
+    }
     if (url.pathname.startsWith("/api/")) {
       await handleApi(req, res, url);
     } else {
