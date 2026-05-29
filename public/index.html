@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Commerce Web Application</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="#store" aria-label="Open store">
+        <span class="brand-mark">EC</span>
+        <span>
+          <strong>CommerceDesk</strong>
+          <small>Product and order hub</small>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="Primary navigation">
+        <button class="nav-link active" data-view="store">Store</button>
+        <button class="nav-link" data-view="orders">Orders</button>
+        <button class="nav-link admin-only hidden" data-view="admin">Admin</button>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button cart-toggle" title="Cart" aria-label="Open cart">
+          <span class="icon">Cart</span>
+          <span id="cartCount">0</span>
+        </button>
+        <button id="authButton" class="button secondary">Sign in</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="store-toolbar" aria-label="Store filters">
+        <div>
+          <h1>Online Store</h1>
+          <p>Browse inventory, checkout, and track every order from one clean workspace.</p>
+        </div>
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="Search products" />
+          <select id="categoryFilter" aria-label="Filter by category">
+            <option value="">All categories</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="storeView" class="view active">
+        <div id="productGrid" class="product-grid"></div>
+      </section>
+
+      <section id="ordersView" class="view">
+        <div class="section-heading">
+          <div>
+            <h2>Order Tracking</h2>
+            <p>Review checkout history and fulfillment status.</p>
+          </div>
+        </div>
+        <div id="ordersList" class="orders-list"></div>
+      </section>
+
+      <section id="adminView" class="view">
+        <div class="admin-layout">
+          <form id="productForm" class="panel">
+            <h2 id="formTitle">Add Product</h2>
+            <input type="hidden" id="productId" />
+            <label>Name<input id="productName" required /></label>
+            <label>Category<input id="productCategory" required /></label>
+            <div class="split">
+              <label>Price<input id="productPrice" type="number" min="0" step="0.01" required /></label>
+              <label>Stock<input id="productStock" type="number" min="0" step="1" required /></label>
+            </div>
+            <label>Image URL<input id="productImage" placeholder="https://..." /></label>
+            <label>Description<textarea id="productDescription" rows="4" required></textarea></label>
+            <label class="check"><input id="productFeatured" type="checkbox" /> Featured item</label>
+            <div class="form-actions">
+              <button class="button" type="submit">Save product</button>
+              <button id="resetProductForm" class="button secondary" type="button">Clear</button>
+            </div>
+          </form>
+          <div class="panel">
+            <h2>Inventory</h2>
+            <div id="adminProducts" class="admin-products"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside id="cartDrawer" class="drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <h2>Cart</h2>
+        <button class="icon-button cart-close" title="Close cart" aria-label="Close cart">x</button>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <form id="checkoutForm" class="checkout-form">
+        <label>Delivery address<textarea id="checkoutAddress" rows="3" required></textarea></label>
+        <div class="totals">
+          <span>Subtotal</span><strong id="cartSubtotal">$0.00</strong>
+          <span>Shipping</span><strong id="cartShipping">$0.00</strong>
+          <span>Tax</span><strong id="cartTax">$0.00</strong>
+          <span>Total</span><strong id="cartTotal">$0.00</strong>
+        </div>
+        <button class="button wide" type="submit">Checkout</button>
+      </form>
+    </aside>
+
+    <div id="authModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <form id="authForm" class="modal-card">
+        <button id="closeAuth" class="icon-button modal-close" type="button" title="Close" aria-label="Close">x</button>
+        <h2 id="authTitle">Sign in</h2>
+        <div class="auth-mode">
+          <button class="segment active" type="button" data-auth-mode="login">Login</button>
+          <button class="segment" type="button" data-auth-mode="register">Register</button>
+        </div>
+        <label class="register-only hidden">Name<input id="authName" /></label>
+        <label>Email<input id="authEmail" type="email" required /></label>
+        <label>Password<input id="authPassword" type="password" minlength="6" required /></label>
+        <button class="button wide" type="submit">Continue</button>
+        <p class="demo-note">Admin: admin@store.test / admin123<br />User: user@store.test / user123</p>
+      </form>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>
