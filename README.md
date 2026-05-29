@@ -12,7 +12,7 @@ Open `http://localhost:3000`.
 
 ## Deploy
 
-This app is Vercel-ready. Static files are served from `public/`, and API requests are handled by the serverless function in `api/[...path].js`.
+This app is Vercel-ready. Static files are served from `public/`, and API requests are handled by the serverless function in `api/index.js`.
 
 ```bash
 vercel.cmd --prod
